@@ -11,7 +11,9 @@ if keyboard_check_released(vk_space) {
 }
 
 if keyboard_check(vk_left) obj_mario.x -= 5;
+
 if keyboard_check(vk_right) obj_mario.x += 5;
+
 if keyboard_check(vk_space) {
 	current_jump_length += obj_settings.grav;
 	jumpSpeed = 10-current_jump_length+(obj_settings.grav/2);
