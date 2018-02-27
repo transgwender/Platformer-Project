@@ -10,25 +10,43 @@ if keyboard_check_released(vk_space) {
 	hasReleased = true;
 }
 
-if keyboard_check(vk_left) obj_mario.x -= 5;
+moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left)
 
-if keyboard_check(vk_right) obj_mario.x += 5;
+if (moveDirection != 0) {
+	obj_mario.x += 5 * moveDirection;
+	sprite_index = spr_marioMoving;
+	image_xscale = moveDirection;
+} else {
+	sprite_index = spr_mario;
+}
 
 if keyboard_check(vk_space) {
-	current_jump_length += obj_settings.grav;
-	jumpSpeed = 10-current_jump_length+(obj_settings.grav/2);
+	currentJumpLength += obj_settings.grav;
+	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
 	obj_mario.y -= jumpSpeed;
+	sprite_index = spr_marioJump;
 } else if (hasReleased && jumpSpeed > 0) {
-	current_fall_length += obj_settings.grav;
-	obj_mario.y += current_fall_length
+	currentFallLength += obj_settings.grav;
+	obj_mario.y += currentFallLength;
+	sprite_index = spr_marioDescent;
 } else if (hasReleased && jumpSpeed <= 0) {
-	current_jump_length += obj_settings.grav;
-	jumpSpeed = 10-current_jump_length+(obj_settings.grav/2);
+	currentJumpLength += obj_settings.grav;
+	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
 	obj_mario.y -= jumpSpeed;
+	sprite_index = spr_marioDescent;
 }
-if collision_point(obj_mario.x,obj_mario.y+32,obj_ground,true,false) {
+
+if jumpSpeed < 0 {
+	sprite_index = spr_marioDescent;
+}
+
+if collision_point(obj_mario.x, obj_mario.y+32, obj_ground, true, false) {
 	obj_mario.y -= obj_settings.grav;
-	current_jump_length = 0.0;
-	current_fall_length = 0.0;
+	currentJumpLength = 0.0;
+	currentFallLength = 0.0;
 	hasReleased = false;
+	jumpSpeed = 0;
 };
+
+if !collision_point(obj_mario.x, obj_mario.y+33, obj_ground, true, false) {	
+}
