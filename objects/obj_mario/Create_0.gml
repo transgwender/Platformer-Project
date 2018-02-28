@@ -1,5 +1,6 @@
 /// @description Insert description here
 
+hasCollided = false;
 hasReleased = false;
 hasPressed = false;
 currentJumpLength = 0;

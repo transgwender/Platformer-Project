@@ -18,7 +18,15 @@ if moveDirection != 0 {
 if keyboard_check(vk_space) {
 	currentJumpLength += obj_settings.grav;
 	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
-	obj_mario.y -= jumpSpeed;
+	if collision_point(obj_mario.x, obj_mario.y-33, obj_ground, true, false) {
+		hasCollided = true;
+	}
+	if !hasCollided {
+		obj_mario.y -= jumpSpeed;
+	} else {
+		currentFallLength += obj_settings.grav;
+		obj_mario.y += currentFallLength;
+	}
 	sprite_index = spr_marioJump;
 	hasPressed = true;
 } else if (hasReleased && jumpSpeed > 0) {
@@ -40,6 +48,7 @@ if collision_point(obj_mario.x, obj_mario.y+1, obj_ground, true, false) {
 	currentFallLength = 0;
 	hasReleased = false;
 	hasPressed = false;
+	hasCollided = false;
 	jumpSpeed = 0;
 }
 
