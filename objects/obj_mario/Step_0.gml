@@ -6,7 +6,7 @@ if keyboard_check_released(vk_space) { hasReleased = true }
 moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left);
 
 if moveDirection != 0 {
-	if !collision_point(obj_mario.x+(9*moveDirection), obj_mario.y, obj_ground, false, false) {
+	if !collision_point(obj_mario.x+(9*moveDirection), obj_mario.y, obj_ground, false, false) && !collision_point(obj_mario.x+(9*moveDirection), obj_mario.y-32, obj_ground, false, false) {
 		obj_mario.x += 5 * moveDirection;
 	}
 	sprite_index = spr_marioMoving;
