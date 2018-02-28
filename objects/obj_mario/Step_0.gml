@@ -1,11 +1,6 @@
 /// @description Insert description here
 // You can write your code in this editor
 
-/*if !collision_point(obj_mario.x,obj_mario.y+32,obj_ground,true,false) {
-	current_fall_length += obj_settings.grav/2;
-	obj_mario.y += current_fall_length
-}*/
-
 if keyboard_check_released(vk_space) { hasReleased = true }
 
 moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left);
