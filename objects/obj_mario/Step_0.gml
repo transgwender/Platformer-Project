@@ -43,13 +43,16 @@ if keyboard_check_pressed(vk_space) && obj_settings.jumpTotal < 3 && !obj_settin
  * it will just use the previous values, and use them for descent.
 */
 
-if keyboard_check(vk_space) {
-	obj_settings.currentJumpLength += obj_settings.grav; 
-	obj_settings.jumpSpeed = (10*obj_settings.jumpModifier)-obj_settings.currentJumpLength+(obj_settings.grav/2);
-	sprite_index = spr_marioJump;
+if keyboard_check_pressed(vk_space) {
 	obj_settings.hasPressed = true;
+}
+
+if obj_settings.hasPressed {
+	obj_settings.currentJumpLength += obj_settings.grav; 
+	obj_settings.jumpSpeed = (10*1)-obj_settings.currentJumpLength+(obj_settings.grav/2);
+	sprite_index = spr_marioJump;
 	if collision_point(obj_mario.x, obj_mario.y-33, obj_ground, true, false) { 
-		obj_settings.hasCollided = true; 
+		obj_settings.hasCollided = true;
 	}
 	if !obj_settings.hasCollided { 
 		obj_mario.y -= obj_settings.jumpSpeed; 
@@ -58,7 +61,8 @@ if keyboard_check(vk_space) {
 		obj_mario.y += obj_settings.currentFallLength;
 	}
 	if obj_settings.jumpSpeed < 0 { sprite_index = spr_marioDescent }
-} else if (obj_settings.hasReleased && obj_settings.jumpSpeed > 0) {
+}
+/*} else if (obj_settings.hasReleased && obj_settings.jumpSpeed > 0) {
 	obj_settings.currentFallLength += obj_settings.grav;
 	obj_mario.y += obj_settings.currentFallLength;
 	sprite_index = spr_marioDescent;
@@ -67,7 +71,7 @@ if keyboard_check(vk_space) {
 	obj_settings.jumpSpeed = 10-obj_settings.currentJumpLength+(obj_settings.grav/2);
 	obj_mario.y -= obj_settings.jumpSpeed;
 	sprite_index = spr_marioDescent;
-}
+}*/
 
 // When the space button is released, will set a variable to hasReleased;
 if keyboard_check_released(vk_space) { obj_settings.hasReleased = true } 
@@ -79,8 +83,8 @@ if keyboard_check_released(vk_space) { obj_settings.hasReleased = true }
  * currentJumpLength so that he will be over the ground instantly instead of being slowly raising, then
  * all values are set to default so they can be reused.
 */
-if collision_point(obj_mario.x, obj_mario.y+1, obj_ground, true, false) {
-	obj_mario.y -= ((obj_settings.currentFallLength + obj_settings.currentJumpLength)/2)+(obj_settings.grav);
+if collision_point(obj_mario.x, obj_mario.y, obj_ground, true, false) {
+	obj_mario.y -= obj_settings.currentJumpLength/2;
 	obj_settings.currentJumpLength = 0;
 	obj_settings.currentFallLength = 0;
 	obj_settings.hasReleased = false;
@@ -107,7 +111,7 @@ if obj_settings.currentGroundLength > 4 {
  * is added to for every frame it isnt on the ground, then Mario's Y is added to, and the sprite is
  * changed to spr_marioDescent.
 */
-if !collision_point(obj_mario.x, obj_mario.y+2, obj_ground, true, false) && !obj_settings.hasReleased && !obj_settings.hasPressed { 
+if !collision_point(obj_mario.x, obj_mario.y+2, obj_ground, true, false) && !obj_settings.hasPressed { 
 	obj_settings.currentFallLength += obj_settings.grav; 
 	obj_mario.y += obj_settings.currentFallLength; 
 	sprite_index = spr_marioDescent;
