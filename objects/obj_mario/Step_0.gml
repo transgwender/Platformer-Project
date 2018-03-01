@@ -21,16 +21,13 @@ if obj_settings.moveDirection != 0 {
 /*
  * Jump Code
  *
- * When the space button is pressed, Mario must jump. So when that happens, the currentJumpLength is added to by grav
- * Then the sprite is changed to spr_marioJump and hasPressed becomes true. Then it detects if there is any obj_ground
- * object over mario, and if there is, sets hasCollided to true. If it hasn't collided, then Mario's Y is just modified
- * by the jumpSpeed value. Else if it has collided and something is overhead, a value called currentFallLength gets
- * added to by grav, and the y value is manipulated by this. Duing all of this, if jumpSpeed is less than 0, the
- * sprite becomes spr_marioDescent.
- * If space is not being held and hasReleased is true, then it will try to figure out if it should continue momentum
- * or restart it. If Mario is still going up (jumpSpeed > 0) then it will use a new value for descent, which behaves
- * similarly for going up, except it is just plain going down. If Mario is already going down (jumpSpeed <= 0) then
- * it will just use the previous values, and use them for descent.
+ * Just read it over slowly... but the just of it is that when space is pressed, it sets a modifier, and total
+ * for triple jumps, and prevents it from running again with hasJumped.
+ * It will also set hasPressed to true, and reset currentGroundLength, and that allows the jump code to run/
+ * It takes currentJumpLength, constantly adds grav to that value, and using simple methods, sets current jumpSpeed
+ * Then the sprite is changed to a jumping one, and it detects the collision above. If it has collided above, it will
+ * immediately begin to go down, else it will update y with jumpSpeed. If it's going down, it sets the sprite
+ * to the descent one.
 */
 
 if keyboard_check_pressed(vk_space) && obj_settings.jumpTotal < 3 && !obj_settings.hasJumped {
@@ -63,8 +60,8 @@ if obj_settings.hasPressed {
 /*
  * Landing Code
  *
- * If the point collides with obj_ground, then Mario's Y is raised to the average of currentFallLength and
- * currentJumpLength so that he will be over the ground instantly instead of being slowly raising, then
+ * If the point collides with obj_ground, then Mario's Y is raised to currentJumpLength/2
+ * so that he will be over the ground instantly instead of being slowly raising, then
  * all values are set to default so they can be reused.
 */
 if collision_point(obj_mario.x, obj_mario.y, obj_ground, true, false) {
@@ -77,7 +74,13 @@ if collision_point(obj_mario.x, obj_mario.y, obj_ground, true, false) {
 	obj_settings.hasJumped = false;
 }
 
-
+/*
+ * Triple Jump Detection Code
+ *
+ * If Mario is coliding with the ground, it will set a currentGroundLength variable to increase. If it's
+ * greater than the allocated time amount, or Mario has already jumped 3 times, it will reset the modifier
+ * total.
+*/
 
 if collision_point(obj_mario.x, obj_mario.y+3, obj_ground, true, false) {
 	obj_settings.currentGroundLength += 0.1;
@@ -91,7 +94,7 @@ if (obj_settings.currentGroundLength > obj_settings.tJumpGracePeriod || (obj_set
 /*
  * Gravity Code (Non Jumping)
  *
- * If the point doesn't collide with obj_ground, meaning it's above the ground, and hasReleased and
+ * If the point doesn't collide with obj_ground, meaning it's above the ground, and
  * hasPressed is false, meaning this isn't because of an intended jump, then the currentFallLength
  * is added to for every frame it isnt on the ground, then Mario's Y is added to, and the sprite is
  * changed to spr_marioDescent.
