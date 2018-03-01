@@ -10,5 +10,5 @@ currentFallLength = 0;
 currentGroundLength = 0;
 jumpSpeed = 0;
 grav = 0.5;
-jumpModifier = 0;
+jumpModifier = 1;
 jumpTotal = 0;
