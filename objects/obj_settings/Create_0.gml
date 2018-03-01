@@ -2,7 +2,6 @@
 
 // obj_mario
 hasCollided = false;
-hasReleased = false;
 hasPressed = false;
 hasJumped = false;
 currentJumpLength = 0;
