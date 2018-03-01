@@ -1,12 +1,12 @@
 /// @description Movement code
 
-// When the space button is released, will set a variable to hasReleased;
-if keyboard_check_released(vk_space) { hasReleased = true } 
-
+// Direction Code
 // General movement direction taking right - left, -1 for left, 1 for right, 0 for both.
 moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left); 
 
 /*
+ * Movement Code
+ *
  * If only one button is pressed, then it sets the sprite to marioMoving, and which direction with image_xscale.
  * Then if the side Mario is going to move in isn't colliding with obj_ground, it will add 5 in the direction intended to x.
  * If no buttons or both buttons are pressed, it will just set the sprite to a default one.
@@ -22,7 +22,10 @@ if moveDirection != 0 {
 	sprite_index = spr_mario;
 }
 
+
 /*
+ * Jump Code
+ *
  * When the space button is pressed, Mario must jump. So when that happens, the currentJumpLength is added to by grav
  * Then the sprite is changed to spr_marioJump and hasPressed becomes true. Then it detects if there is any obj_ground
  * object over mario, and if there is, sets hasCollided to true. If it hasn't collided, then Mario's Y is just modified
@@ -34,6 +37,8 @@ if moveDirection != 0 {
  * similarly for going up, except it is just plain going down. If Mario is already going down (jumpSpeed <= 0) then
  * it will just use the previous values, and use them for descent.
 */
+
+
 if keyboard_check(vk_space) { 
 	currentJumpLength += obj_settings.grav; 
 	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
@@ -60,8 +65,12 @@ if keyboard_check(vk_space) {
 	sprite_index = spr_marioDescent;
 }
 
+// When the space button is released, will set a variable to hasReleased;
+if keyboard_check_released(vk_space) { hasReleased = true } 
 
 /*
+ * Landing Code
+ *
  * If the point collides with obj_ground, then Mario's Y is raised to the average of currentFallLength and
  * currentJumpLength so that he will be over the ground instantly instead of being slowly raising, then
  * all values are set to default so they can be reused.
@@ -77,7 +86,9 @@ if collision_point(obj_mario.x, obj_mario.y+1, obj_ground, true, false) {
 }
 
 /*
- * IF the point doesn't collide with obj_ground, meaning it's above the ground, and hasReleased and
+ * Gravity Code (Non Jumping)
+ *
+ * If the point doesn't collide with obj_ground, meaning it's above the ground, and hasReleased and
  * hasPressed is false, meaning this isn't because of an intended jump, then the currentFallLength
  * is added to for every frame it isnt on the ground, then Mario's Y is added to, and the sprite is
  * changed to spr_marioDescent.
