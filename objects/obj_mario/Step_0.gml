@@ -2,7 +2,7 @@
 
 // Direction Code
 // General movement direction taking right - left, -1 for left, 1 for right, 0 for both.
-moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left); 
+obj_settings.moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left); 
 
 /*
  * Movement Code
@@ -11,17 +11,22 @@ moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left);
  * Then if the side Mario is going to move in isn't colliding with obj_ground, it will add 5 in the direction intended to x.
  * If no buttons or both buttons are pressed, it will just set the sprite to a default one.
 */
-if moveDirection != 0 {
-	if !collision_point(obj_mario.x+(9*moveDirection), obj_mario.y, obj_ground, false, false) &&
-	!collision_point(obj_mario.x+(9*moveDirection), obj_mario.y-32, obj_ground, false, false) {
-		obj_mario.x += 5 * moveDirection;
+if obj_settings.moveDirection != 0 {
+	if !collision_point(obj_mario.x+(9*obj_settings.moveDirection), obj_mario.y, obj_ground, false, false) &&
+	!collision_point(obj_mario.x+(9*obj_settings.moveDirection), obj_mario.y-32, obj_ground, false, false) {
+		obj_mario.x += 5 * obj_settings.moveDirection;
 	}
 	sprite_index = spr_marioMoving;
-	image_xscale = moveDirection;
+	image_xscale = obj_settings.moveDirection;
 } else {
 	sprite_index = spr_mario;
 }
 
+if keyboard_check_pressed(vk_space) && obj_settings.jumpTotal < 3 && !obj_settings.hasJumped {
+	obj_settings.jumpModifier += 0.5;
+	obj_settings.jumpTotal += 1;
+	obj_settings.hasJumped = true;
+}
 
 /*
  * Jump Code
@@ -38,35 +43,34 @@ if moveDirection != 0 {
  * it will just use the previous values, and use them for descent.
 */
 
-
-if keyboard_check(vk_space) { 
-	currentJumpLength += obj_settings.grav; 
-	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
+if keyboard_check(vk_space) {
+	obj_settings.currentJumpLength += obj_settings.grav; 
+	obj_settings.jumpSpeed = (10*obj_settings.jumpModifier)-obj_settings.currentJumpLength+(obj_settings.grav/2);
 	sprite_index = spr_marioJump;
-	hasPressed = true;
+	obj_settings.hasPressed = true;
 	if collision_point(obj_mario.x, obj_mario.y-33, obj_ground, true, false) { 
-		hasCollided = true; 
+		obj_settings.hasCollided = true; 
 	}
-	if !hasCollided { 
-		obj_mario.y -= jumpSpeed; 
+	if !obj_settings.hasCollided { 
+		obj_mario.y -= obj_settings.jumpSpeed; 
 	} else {
-		currentFallLength += obj_settings.grav;
-		obj_mario.y += currentFallLength;
+		obj_settings.currentFallLength += obj_settings.grav;
+		obj_mario.y += obj_settings.currentFallLength;
 	}
-	if jumpSpeed < 0 { sprite_index = spr_marioDescent }
-} else if (hasReleased && jumpSpeed > 0) {
-	currentFallLength += obj_settings.grav;
-	obj_mario.y += currentFallLength;
+	if obj_settings.jumpSpeed < 0 { sprite_index = spr_marioDescent }
+} else if (obj_settings.hasReleased && obj_settings.jumpSpeed > 0) {
+	obj_settings.currentFallLength += obj_settings.grav;
+	obj_mario.y += obj_settings.currentFallLength;
 	sprite_index = spr_marioDescent;
-} else if (hasReleased && jumpSpeed <= 0) {
-	currentJumpLength += obj_settings.grav;
-	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
-	obj_mario.y -= jumpSpeed;
+} else if (obj_settings.hasReleased && obj_settings.jumpSpeed <= 0) {
+	obj_settings.currentJumpLength += obj_settings.grav;
+	obj_settings.jumpSpeed = 10-obj_settings.currentJumpLength+(obj_settings.grav/2);
+	obj_mario.y -= obj_settings.jumpSpeed;
 	sprite_index = spr_marioDescent;
 }
 
 // When the space button is released, will set a variable to hasReleased;
-if keyboard_check_released(vk_space) { hasReleased = true } 
+if keyboard_check_released(vk_space) { obj_settings.hasReleased = true } 
 
 /*
  * Landing Code
@@ -76,13 +80,23 @@ if keyboard_check_released(vk_space) { hasReleased = true }
  * all values are set to default so they can be reused.
 */
 if collision_point(obj_mario.x, obj_mario.y+1, obj_ground, true, false) {
-	obj_mario.y -= ((currentFallLength + currentJumpLength)/2)+(obj_settings.grav);
-	currentJumpLength = 0;
-	currentFallLength = 0;
-	hasReleased = false;
-	hasPressed = false;
-	hasCollided = false;
-	jumpSpeed = 0;
+	obj_mario.y -= ((obj_settings.currentFallLength + obj_settings.currentJumpLength)/2)+(obj_settings.grav);
+	obj_settings.currentJumpLength = 0;
+	obj_settings.currentFallLength = 0;
+	obj_settings.hasReleased = false;
+	obj_settings.hasPressed = false;
+	obj_settings.hasCollided = false;
+	obj_settings.jumpSpeed = 0;
+	obj_settings.hasJumped = false;
+}
+
+if collision_point(obj_mario.x, obj_mario.y+3, obj_ground, true, false) {
+	obj_settings.currentGroundLength += 0.1;
+}
+
+if obj_settings.currentGroundLength > 4 {
+	obj_settings.jumpModifier = 1;
+	obj_settings.jumpTotal = 0;
 }
 
 /*
@@ -93,8 +107,8 @@ if collision_point(obj_mario.x, obj_mario.y+1, obj_ground, true, false) {
  * is added to for every frame it isnt on the ground, then Mario's Y is added to, and the sprite is
  * changed to spr_marioDescent.
 */
-if !collision_point(obj_mario.x, obj_mario.y+2, obj_ground, true, false) && !hasReleased && !hasPressed { 
-	currentFallLength += obj_settings.grav; 
-	obj_mario.y += currentFallLength; 
+if !collision_point(obj_mario.x, obj_mario.y+2, obj_ground, true, false) && !obj_settings.hasReleased && !obj_settings.hasPressed { 
+	obj_settings.currentFallLength += obj_settings.grav; 
+	obj_mario.y += obj_settings.currentFallLength; 
 	sprite_index = spr_marioDescent;
 }
