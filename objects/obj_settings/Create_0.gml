@@ -13,7 +13,7 @@ jumpModifier = 1; // Starting Value for a Modifier for Jumping
 jumpSpeed = 0; // How fast is Mario currently going with jumping (X)
 jumpTotal = 0; // How many times Mario has jumped (X)
 
-tJumpGracePeriod = 0.6; // How long Mario can be on the ground before jump is reset.
+tJumpGracePeriod = 0.3; // How long Mario can be on the ground before jump is reset.
 
 moveSpeed = 5; // Movement Speed
 moveDirection = 0; // Movement Direction (X)
