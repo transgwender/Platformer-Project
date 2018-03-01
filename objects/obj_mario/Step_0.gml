@@ -23,27 +23,22 @@ if moveDirection != 0 {
 }
 
 /*
- * If the space key is pressed, then the currentJumpLength will be added to every frame by obj_settings.grav. Then
- * the jumpSpeed value is set with the starting speed - the currentJumpLength, then that value is added to by half of
- * obj_settings.grav (I have no clue why that's there, but I don't want to remove it). The sprite of Mario Jumping is then
- * set, and hasPressed is set to true. Then if Mario's top has collided with obj_ground (Usually the bottom) then it sets a
- * variable of hasCollied to true. If hasCollided is still false, then the y will be updated with jumpSpeed. 
- * If it hasCollided, then instead currentFallLengt0h will has .grav added to it every frame, then y is
- * updated by currentFallLength. That prevent's Mario from jumping through the bottom of blocks.
- * If descending, then sprite is set to spr_marioDescent.
- * If space is not pressed, then it checks if hasReleased is true and if jumpSpeed is more than or less than 0.
- * If jumpSpeed is more than 0, it will then start increasing currentFallLength by grav, and use that to set
- * Mario's y axis, and change the sprite to marioDescent. If jumpSpeed is less than 0, then it will maintain the
- * value Mario had before, continuing currentJumpLength, and jumpSpeed, then set the y axis for Mario, and the
- * sprite to marioDescent. The reason for this is that if jumpSpeed is less than 0, then Mario is already going
- * down, as that value is used to subtract Mario's y-axis, so a positive value makes it goes down. Otherwise, if
- * it is a negative value, using that value would instead make Mario go up. We don't want that since Mario isn't
- * in space, so we instead use currentFallLength, starting at 0 and adding grav to that until it hits the ground.
- * Then that value is added to Mario, so it goes down. Makes sense? Hopefully, I'm not going over that again.
+ * When the space button is pressed, Mario must jump. So when that happens, the currentJumpLength is added to by grav
+ * Then the sprite is changed to spr_marioJump and hasPressed becomes true. Then it detects if there is any obj_ground
+ * object over mario, and if there is, sets hasCollided to true. If it hasn't collided, then Mario's Y is just modified
+ * by the jumpSpeed value. Else if it has collided and something is overhead, a value called currentFallLength gets
+ * added to by grav, and the y value is manipulated by this. Duing all of this, if jumpSpeed is less than 0, the
+ * sprite becomes spr_marioDescent.
+ * If space is not being held and hasReleased is true, then it will try to figure out if it should continue momentum
+ * or restart it. If Mario is still going up (jumpSpeed > 0) then it will use a new value for descent, which behaves
+ * similarly for going up, except it is just plain going down. If Mario is already going down (jumpSpeed <= 0) then
+ * it will just use the previous values, and use them for descent.
 */
 if keyboard_check(vk_space) { 
 	currentJumpLength += obj_settings.grav; 
-	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2); 
+	jumpSpeed = 10-currentJumpLength+(obj_settings.grav/2);
+	sprite_index = spr_marioJump;
+	hasPressed = true;
 	if collision_point(obj_mario.x, obj_mario.y-33, obj_ground, true, false) { 
 		hasCollided = true; 
 	}
@@ -53,8 +48,6 @@ if keyboard_check(vk_space) {
 		currentFallLength += obj_settings.grav;
 		obj_mario.y += currentFallLength;
 	}
-	sprite_index = spr_marioJump;
-	hasPressed = true;
 	if jumpSpeed < 0 { sprite_index = spr_marioDescent }
 } else if (hasReleased && jumpSpeed > 0) {
 	currentFallLength += obj_settings.grav;
