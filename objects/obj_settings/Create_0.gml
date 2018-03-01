@@ -12,3 +12,7 @@ jumpSpeed = 0;
 grav = 0.5;
 jumpModifier = 1;
 jumpTotal = 0;
+jumpStart = 5;
+tJumpGracePeriod = 0.6;
+moveDirection = 0;
+moveSpeed = 5;

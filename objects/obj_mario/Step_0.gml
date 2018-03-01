@@ -14,7 +14,7 @@ obj_settings.moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left);
 if obj_settings.moveDirection != 0 {
 	if !collision_point(obj_mario.x+(9*obj_settings.moveDirection), obj_mario.y, obj_ground, false, false) &&
 	!collision_point(obj_mario.x+(9*obj_settings.moveDirection), obj_mario.y-32, obj_ground, false, false) {
-		obj_mario.x += 5 * obj_settings.moveDirection;
+		obj_mario.x += obj_settings.moveSpeed * obj_settings.moveDirection;
 	}
 	sprite_index = spr_marioMoving;
 	image_xscale = obj_settings.moveDirection;
@@ -50,7 +50,7 @@ if keyboard_check_pressed(vk_space) {
 
 if obj_settings.hasPressed {
 	obj_settings.currentJumpLength += obj_settings.grav; 
-	obj_settings.jumpSpeed = (5+obj_settings.jumpModifier)-obj_settings.currentJumpLength+(obj_settings.grav/2);
+	obj_settings.jumpSpeed = (obj_settings.jumpStart+obj_settings.jumpModifier)-obj_settings.currentJumpLength+(obj_settings.grav/2);
 	sprite_index = spr_marioJump;
 	if collision_point(obj_mario.x, obj_mario.y-33, obj_ground, true, false) { 
 		obj_settings.hasCollided = true;
@@ -99,7 +99,7 @@ if collision_point(obj_mario.x, obj_mario.y+3, obj_ground, true, false) {
 	obj_settings.currentGroundLength += 0.1;
 }
 
-if (obj_settings.currentGroundLength > 0.6 || (obj_settings.jumpTotal = 3 && obj_settings.hasJumped = false)) {
+if (obj_settings.currentGroundLength > obj_settings.tJumpGracePeriod || (obj_settings.jumpTotal = 3 && obj_settings.hasJumped = false)) {
 	obj_settings.jumpModifier = 1;
 	obj_settings.jumpTotal = 0;
 }
