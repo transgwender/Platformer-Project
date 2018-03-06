@@ -50,7 +50,7 @@
             "Key": "11aa12dc-99b0-4390-bae9-e56c832f3237",
             "Value": {
                 "id": "05ff8242-52e3-4ad1-8767-0398bf1c1092",
-                "resourcePath": "sprites\\spr_marioMoving\\spr_marioMoving.yy",
+                "resourcePath": "sprites\\spr_playerMoving\\spr_playerMoving.yy",
                 "resourceType": "GMSprite"
             }
         },
@@ -58,7 +58,7 @@
             "Key": "1742853f-2101-49d8-aacb-d1ed2da4a720",
             "Value": {
                 "id": "4c667e18-1861-42b5-8738-f4bd43c7a638",
-                "resourcePath": "sprites\\spr_marioJump\\spr_marioJump.yy",
+                "resourcePath": "sprites\\spr_playerJump\\spr_playerJump.yy",
                 "resourceType": "GMSprite"
             }
         },
@@ -74,7 +74,7 @@
             "Key": "2de24ef4-359b-45fa-b282-9c539298edfd",
             "Value": {
                 "id": "e26272ee-9ab8-4f83-a21a-1544888d46d6",
-                "resourcePath": "objects\\obj_ground\\obj_ground.yy",
+                "resourcePath": "objects\\obj_solid\\obj_solid.yy",
                 "resourceType": "GMObject"
             }
         },
@@ -106,7 +106,7 @@
             "Key": "4eaf88b1-c858-4a3e-a839-7c65a0667363",
             "Value": {
                 "id": "4a97c59b-b9c9-4095-986e-a2c436c82f32",
-                "resourcePath": "objects\\obj_mario\\obj_mario.yy",
+                "resourcePath": "objects\\obj_player\\obj_player.yy",
                 "resourceType": "GMObject"
             }
         },
@@ -146,7 +146,7 @@
             "Key": "6f209bd0-d570-418d-8c0b-9c1cadf035d9",
             "Value": {
                 "id": "c42cc7f3-4228-4383-b92f-dda456d490df",
-                "resourcePath": "sprites\\spr_marioDescent\\spr_marioDescent.yy",
+                "resourcePath": "sprites\\spr_playerDescent\\spr_playerDescent.yy",
                 "resourceType": "GMSprite"
             }
         },
@@ -170,7 +170,7 @@
             "Key": "843a2f4e-a791-412c-b545-e33e99e9fd5f",
             "Value": {
                 "id": "8fb8bec9-abc0-4275-b647-d47c9bf9f112",
-                "resourcePath": "sprites\\spr_mario\\spr_mario.yy",
+                "resourcePath": "sprites\\spr_player\\spr_player.yy",
                 "resourceType": "GMSprite"
             }
         },
