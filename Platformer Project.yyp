@@ -71,6 +71,14 @@
             }
         },
         {
+            "Key": "2cc4c4f8-73c6-4887-a5aa-855567651a05",
+            "Value": {
+                "id": "a13429e5-b61b-41f8-a569-e58dedc3f37a",
+                "resourcePath": "objects\\obj_refresh\\obj_refresh.yy",
+                "resourceType": "GMObject"
+            }
+        },
+        {
             "Key": "2de24ef4-359b-45fa-b282-9c539298edfd",
             "Value": {
                 "id": "e26272ee-9ab8-4f83-a21a-1544888d46d6",
@@ -202,7 +210,7 @@
             "Key": "a45b66e6-fe8d-4967-af7b-b59f4bed7a4b",
             "Value": {
                 "id": "2239c644-4f89-4fd0-9a7b-0c59b172a6eb",
-                "resourcePath": "tilesets\\tileset0\\tileset0.yy",
+                "resourcePath": "tilesets\\tls_overworld\\tls_overworld.yy",
                 "resourceType": "GMTileSet"
             }
         },

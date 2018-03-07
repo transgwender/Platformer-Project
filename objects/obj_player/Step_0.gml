@@ -42,7 +42,9 @@ if keyboard_check_pressed(vk_space) {
 }
 
 if obj_settings.hasPressed {
-	obj_settings.currentJumpLength += obj_settings.grav; 
+	if !obj_settings.hasDived {
+		obj_settings.currentJumpLength += obj_settings.grav; 
+	}
 	obj_settings.jumpSpeed = (obj_settings.jumpStart+obj_settings.jumpModifier)-obj_settings.currentJumpLength+(obj_settings.grav/2);
 	sprite_index = spr_playerJump;
 	if collision_point(obj_player.x, obj_player.y-33, obj_solid, true, false) { 
@@ -51,8 +53,10 @@ if obj_settings.hasPressed {
 	if !obj_settings.hasCollided { 
 		obj_player.y -= obj_settings.jumpSpeed; 
 	} else {
-		obj_settings.currentFallLength += obj_settings.grav;
-		obj_player.y += obj_settings.currentFallLength;
+		if !obj_settings.hasDived {
+			obj_settings.currentFallLength += obj_settings.grav;
+			obj_player.y += obj_settings.currentFallLength;
+		}
 	}
 	if obj_settings.jumpSpeed < 0 { sprite_index = spr_playerDescent }
 }
@@ -65,13 +69,14 @@ if obj_settings.hasPressed {
  * all values are set to default so they can be reused.
 */
 if collision_point(obj_player.x, obj_player.y, obj_solid, true, false) {
-	obj_player.y -= obj_settings.currentJumpLength/2;
+	obj_player.y -= obj_settings.currentJumpLength/2 + obj_settings.grav;
 	obj_settings.currentJumpLength = 0;
 	obj_settings.currentFallLength = 0;
 	obj_settings.hasPressed = false;
 	obj_settings.hasCollided = false;
 	obj_settings.jumpSpeed = 0;
 	obj_settings.hasJumped = false;
+	obj_settings.hasDived = false;
 }
 
 /*
@@ -104,4 +109,17 @@ if !collision_point(obj_player.x, obj_player.y+2, obj_solid, true, false) && !ob
 	obj_settings.currentFallLength += obj_settings.grav; 
 	obj_player.y += obj_settings.currentFallLength; 
 	sprite_index = spr_playerDescent;
+}
+
+if keyboard_check_pressed(vk_down) {
+	if !obj_settings.hasDived {
+		obj_settings.currentJumpLength = 0;
+	}
+	obj_settings.hasDived = true;
+}
+
+if obj_settings.hasDived {
+	obj_settings.currentJumpLength += obj_settings.grav;
+	obj_settings.jumpSpeed = 0 - obj_settings.currentJumpLength;
+	obj_player.y -= obj_settings.jumpSpeed; 
 }
