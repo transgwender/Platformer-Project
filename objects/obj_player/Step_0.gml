@@ -7,13 +7,14 @@
 */
 obj_settings.moveDirection = keyboard_check(vk_right) - keyboard_check(vk_left); 
 
-if obj_settings.moveDirection != 0 {
+if obj_settings.moveDirection != 0 && !obj_settings.hasDived {
 	if !collision_point(obj_player.x+(9*obj_settings.moveDirection), obj_player.y, obj_solid, false, false) &&
 	!collision_point(obj_player.x+(9*obj_settings.moveDirection), obj_player.y-32, obj_solid, false, false) {
 		obj_player.x += obj_settings.moveSpeed * obj_settings.moveDirection;
 	}
 	sprite_index = spr_playerMoving;
 	image_xscale = obj_settings.moveDirection;
+	obj_settings.currentDirection = obj_settings.moveDirection;
 } else {
 	sprite_index = spr_player;
 }
@@ -39,6 +40,7 @@ if keyboard_check_pressed(vk_space) && obj_settings.jumpTotal < 3 && !obj_settin
 if keyboard_check_pressed(vk_space) {
 	obj_settings.hasPressed = true;
 	obj_settings.currentGroundLength = 0;
+	obj_settings.hasDived = false;
 }
 
 if obj_settings.hasPressed {
@@ -76,7 +78,8 @@ if collision_point(obj_player.x, obj_player.y, obj_solid, true, false) {
 	obj_settings.hasCollided = false;
 	obj_settings.jumpSpeed = 0;
 	obj_settings.hasJumped = false;
-	obj_settings.hasDived = false;
+	obj_settings.hasLanded = true;
+	obj_settings.currentDiveLengthY = 0;
 }
 
 /*
@@ -113,13 +116,35 @@ if !collision_point(obj_player.x, obj_player.y+2, obj_solid, true, false) && !ob
 
 if keyboard_check_pressed(vk_down) {
 	if !obj_settings.hasDived {
-		obj_settings.currentJumpLength = 0;
+		obj_settings.currentDiveLengthY = 0;
+		obj_settings.currentDiveLengthX = 5;
+		obj_settings.hasLanded = false;
 	}
 	obj_settings.hasDived = true;
 }
 
+if collision_point(obj_player.x+(12*obj_settings.currentDirection), obj_player.y, obj_solid, false, false) &&
+	  collision_point(obj_player.x+(12*obj_settings.currentDirection), obj_player.y-32, obj_solid, false, false) {
+		obj_settings.hasSideCollided = true;
+	  } else { obj_settings.hasSideCollided = false; }
+
 if obj_settings.hasDived {
-	obj_settings.currentJumpLength += obj_settings.grav;
-	obj_settings.jumpSpeed = 0 - obj_settings.currentJumpLength;
-	obj_player.y -= obj_settings.jumpSpeed; 
+	if !obj_settings.hasSideCollided {
+		if obj_settings.hasLanded = false {
+			obj_settings.currentDiveLengthY += obj_settings.grav;
+			if obj_settings.currentDiveLengthX < obj_settings.diveSpeedMax {
+				obj_settings.currentDiveLengthX += obj_settings.diveSpeed;
+			}
+		} else {
+			if obj_settings.currentDiveLengthX > 0 {
+				obj_settings.currentDiveLengthX -= obj_settings.diveSpeed;	
+			} else { obj_settings.currentDiveLengthX = 0 }
+		}
+		obj_settings.jumpSpeed = 0 - obj_settings.currentJumpLength * 2;
+		obj_player.y += obj_settings.currentDiveLengthY;
+		obj_player.x += obj_settings.currentDiveLengthX * obj_settings.currentDirection;
+	} else {
+		obj_settings.currentDiveLengthX = 0;
+		obj_settings.hasDived = false;
+	}
 }
